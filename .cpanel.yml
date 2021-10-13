@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home2/roopinve/notes.pandamotions.com/
+    - /bin/cp -r * $DEPLOYPATH
