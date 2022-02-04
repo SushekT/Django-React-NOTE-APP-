@@ -11,6 +11,8 @@ from .models import *
 from .serializers import *
 
 # Create your views here.
+
+
 @api_view(['GET'])
 def getNote(request):
     note = Note.objects.all()
@@ -18,11 +20,13 @@ def getNote(request):
     serializers = NoteSerializer(note, many=True)
     return Response(serializers.data)
 
+
 @api_view(['GET'])
 def getDetailNote(request, pk):
     note = Note.objects.get(id=pk)
-    serializers = NoteSerializer(note, many= False)
+    serializers = NoteSerializer(note, many=False)
     return Response(serializers.data)
+
 
 @api_view(['POST'])
 def createNote(request):
@@ -38,11 +42,12 @@ def createNote(request):
     serializers = NoteSerializer(note, many=False)
     return Response(serializers.data)
 
+
 @api_view(['PUT'])
 def updateNote(request, pk):
     data = request.data
 
-    note = Note.objects.get(id = pk)
+    note = Note.objects.get(id=pk)
     try:
         note.updated = data['updated']
         note.body = data['body']
@@ -51,10 +56,9 @@ def updateNote(request, pk):
     except:
         pass
 
-
-
-    serializers = NoteSerializer(note, many= False)
+    serializers = NoteSerializer(note, many=False)
     return Response(serializers.data)
+
 
 @api_view(['DELETE'])
 def deleteNote(request, pk):
@@ -63,4 +67,3 @@ def deleteNote(request, pk):
     note.delete()
 
     return Response('Deleted.')
-
