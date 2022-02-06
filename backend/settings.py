@@ -32,7 +32,7 @@ DEBUG = True
 #SECURE_SSL_REDIRECT = False
 
 ALLOWED_HOSTS = ['http://notes.pandamotions.com/',
-                 'localhost', '127.0.0.1', 'notes.pandamotions.com']
+                 'localhost', '127.0.0.1', 'notes.pandamotions.com','.ngrok.io']
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'note',
+    'todo',
     'user',
 
     "corsheaders",
