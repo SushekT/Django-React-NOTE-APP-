@@ -32,7 +32,7 @@ DEBUG = True
 #SECURE_SSL_REDIRECT = False
 
 ALLOWED_HOSTS = ['http://notes.pandamotions.com/',
-                 'localhost', '127.0.0.1', 'notes.pandamotions.com','.ngrok.io']
+                 'localhost', '127.0.0.1', 'notes.pandamotions.com', '.ngrok.io']
 
 
 # Application definition
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 # Password validation
