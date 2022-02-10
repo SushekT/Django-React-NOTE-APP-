@@ -11,6 +11,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'id',
             'task',
             'checked',
+            'created',
         )
 
 
