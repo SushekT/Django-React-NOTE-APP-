@@ -22,9 +22,11 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html')),
-    path('api/', include('note.urls')),
+    path('api/notes/', include('note.urls')),
+    path('api/todos/', include('todo.urls')),
     path('user/', include('user.urls')),
-    path('auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('silk/', include('silk.urls', namespace='silk')),
 ]
 
 

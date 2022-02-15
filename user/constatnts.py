@@ -1,0 +1,4 @@
+PERMISSION_TYPE = (
+    ('READ_ONLY', 'READ_ONLY'),
+    ('EDITOR', 'EDITOR'),
+)

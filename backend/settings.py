@@ -32,7 +32,7 @@ DEBUG = True
 #SECURE_SSL_REDIRECT = False
 
 ALLOWED_HOSTS = ['http://notes.pandamotions.com/',
-                 'localhost', '127.0.0.1', 'notes.pandamotions.com']
+                 'localhost', '127.0.0.1', 'notes.pandamotions.com', '.ngrok.io']
 
 
 # Application definition
@@ -46,14 +46,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'note',
+    'todo',
     'user',
 
     "corsheaders",
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
+    'silk',
 ]
 
 MIDDLEWARE = [
+    'silk.middleware.SilkyMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,6 +70,7 @@ MIDDLEWARE = [
 
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -105,7 +111,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 # Password validation
