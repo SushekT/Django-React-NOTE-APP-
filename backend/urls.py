@@ -25,7 +25,8 @@ urlpatterns = [
     path('api/notes/', include('note.urls')),
     path('api/todos/', include('todo.urls')),
     path('user/', include('user.urls')),
-    path('auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('silk/', include('silk.urls', namespace='silk')),
 ]
 
 
