@@ -2,6 +2,9 @@ from re import L
 from rest_framework import permissions
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+
+from note.models import Note
 
 
 class IsNoteOwner(permissions.BasePermission):
@@ -12,9 +15,7 @@ class IsNoteOwner(permissions.BasePermission):
 
     def has_permission(self, request, view):
 
-        if request.user.id:
-            return True
-        return False
+        return bool(request.user.id)
 
     def has_object_permission(self, request, view, obj):
         if obj.user.id == request.user.id:
@@ -31,12 +32,12 @@ class IsCollaborationOwner(permissions.BasePermission):
 
     def has_permission(self, request, view):
 
-        if request.user.id:
-            return True
-        return False
+        # if view.get_queryset().filter(notes_id=request.user.id).exists():
+        #     return True
+        # return False
+
+        return bool(Note.objects.filter(id=view.kwargs['note_id'], user=request.user).count())
 
     def has_object_permission(self, request, view, obj):
-        if obj.notes.user.id == request.user.id:
-            return True
-        else:
-            raise PermissionDenied()
+
+        return bool(obj.notes.user.id == request.user.id)

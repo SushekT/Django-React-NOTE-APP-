@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from note.serializers import NoteSerializer
+from rest_framework.validators import UniqueTogetherValidator
 
 from user.models import Collaborations
 
@@ -35,12 +36,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CollaborationSerializer(serializers.ModelSerializer):
-    note = NoteSerializer(source='notes', many=False, read_only=True)
     collaborator = serializers.SerializerMethodField()
 
     class Meta:
+        
         model = Collaborations
-        fields = ['note', 'collaborators', 'collaborator', 'permission']
+        fields = ['collaborators', 'collaborator', 'permission']
 
+    
     def get_collaborator(self, obj):
         return obj.collaborators.email
+
+   
+        # ToDo items belong to a parent list, and have an ordering defined
+        # by the 'position' field. No two items in a given list may share
+        # the same position.
+       
