@@ -53,12 +53,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
-    'silk',
+    'drf_yasg',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
-    'silk.middleware.SilkyMiddleware',
-
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -147,7 +147,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
 }
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'}
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -183,3 +184,9 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]

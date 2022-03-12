@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from rest_framework import serializers
-from rest_framework.views import APIView
 from rest_framework import generics
-from rest_framework.response import Response
-from django.http import HttpResponse, JsonResponse
+from django.db.models import Q
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 import datetime
@@ -12,9 +11,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.authentication import BasicAuthentication
 from django.shortcuts import get_object_or_404
+from django.db.models import Prefetch
 
 from note.filters import NoteFilter
 from note.permission import IsNoteOwner
+from user.models import Collaborations
+
 
 from .models import *
 from .serializers import *
@@ -81,9 +83,10 @@ class MyNotesListView(generics.ListCreateAPIView):
     search_fields = ['body', ]
     ordering_fields = ['updated', ]
     authentication_classes = [BasicAuthentication, ]
+    permission_classes = [IsAuthenticated, ]
 
     def get_queryset(self):
-        return super().get_queryset().filter(user_id=self.request.user.id)
+        return super().get_queryset().filter(Q(user=self.request.user) | Q(collaborations__collaborators=self.request.user))
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
