@@ -9,7 +9,7 @@ from user.constatnts import PERMISSION_TYPE
 
 
 class Collaborations(models.Model):
-    notes = models.ForeignKey(Note, on_delete=models.SET_NULL, null=True)
+    notes = models.ForeignKey(Note, on_delete=models.SET_NULL, null=True, related_name='collaborations')
     collaborators = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True)
     permission = models.CharField(choices=PERMISSION_TYPE, max_length=10)
