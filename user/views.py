@@ -31,7 +31,7 @@ class AddColloaborations(generics.ListCreateAPIView):
     queryset = Collaborations.objects.all()
     serializer_class = CollaborationSerializer
     authentication_classes = [BasicAuthentication, ]
-    permission_classes = [IsCollaborationOwner, ]
+    permission_classes = [IsAuthenticated, IsCollaborationOwner, ]
 
     def perform_create(self, serializer):
         serializer.save(notes_id=self.kwargs['note_id'])
