@@ -31,12 +31,13 @@ class AddColloaborations(generics.ListCreateAPIView):
     queryset = Collaborations.objects.all()
     serializer_class = CollaborationSerializer
     authentication_classes = [BasicAuthentication, ]
+    permission_classes = [IsCollaborationOwner, ]
 
     def perform_create(self, serializer):
         serializer.save(notes_id=self.kwargs['note_id'])
 
     def get_queryset(self):
-        return super().get_queryset().filter(notes_id=self.kwargs['note_id'])
+        return super().get_queryset().select_related('notes__user', 'collaborators').filter(notes_id=self.kwargs['note_id'])
 
 
 class UpdateDeleteCollobaorations(generics.RetrieveUpdateDestroyAPIView):
