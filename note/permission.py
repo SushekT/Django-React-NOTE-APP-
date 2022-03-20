@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
 from note.models import Note
+from user.models import Collaborations
 
 
 class IsNoteOwner(permissions.BasePermission):
@@ -20,8 +21,15 @@ class IsNoteOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if obj.user.id == request.user.id:
             return True
-        else:
-            raise PermissionDenied()
+        try:
+            if collaborations := Collaborations.objects.select_related('collaborators', 'notes__user').get(notes=obj, collaborators=request.user):
+                if request.user != collaborations.collaborators:
+                    raise PermissionDenied
+                if 'READ_ONLY' in collaborations.permission:
+                    return False
+                return True
+        except:
+            raise PermissionDenied
 
 
 class IsCollaborationOwner(permissions.BasePermission):
@@ -36,8 +44,9 @@ class IsCollaborationOwner(permissions.BasePermission):
         #     return True
         # return False
         # print(request.user.id)
+        print('upp')
         return bool(Note.objects.filter(id=view.kwargs['note_id'], user=request.user).count())
 
     def has_object_permission(self, request, view, obj):
 
-        return bool(obj.notes.user.id == request.user.id)
+        return bool(obj.notes.user == request.user)
