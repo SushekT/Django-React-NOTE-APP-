@@ -83,9 +83,10 @@ class MyNotesListView(generics.ListCreateAPIView):
     search_fields = ['body', ]
     ordering_fields = ['updated', ]
     authentication_classes = [BasicAuthentication, ]
-    permission_classes = [IsAuthenticated, ]
+ 
 
     def get_queryset(self):
+        print('this is the user ', self.request.user)
         return super().get_queryset().filter(Q(user=self.request.user) | Q(collaborations__collaborators=self.request.user))
 
     def perform_create(self, serializer):
