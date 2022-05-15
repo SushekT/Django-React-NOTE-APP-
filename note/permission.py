@@ -23,8 +23,6 @@ class IsNoteOwner(permissions.BasePermission):
             return True
         try:
             if collaborations := Collaborations.objects.select_related('collaborators', 'notes__user').get(notes=obj, collaborators=request.user):
-                if request.user != collaborations.collaborators:
-                    raise PermissionDenied
                 if 'READ_ONLY' in collaborations.permission:
                     return False
                 return True
