@@ -10,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.authentication import BasicAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
 
@@ -82,14 +83,15 @@ class MyNotesListView(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['body', ]
     ordering_fields = ['updated', ]
-    authentication_classes = [BasicAuthentication, ]
- 
+    authentication_classes = [JWTAuthentication,BasicAuthentication, ]
+    permission_classes = [IsAuthenticated, IsNoteOwner, ]
 
     def get_queryset(self):
-        print('this is the user ', self.request.user)
+        print('this is the user', self.request.user)
         return super().get_queryset().filter(Q(user=self.request.user) | Q(collaborations__collaborators=self.request.user))
 
     def perform_create(self, serializer):
+        print('this is user create', self.request.user)
         serializer.save(user=self.request.user)
 
 
@@ -97,7 +99,7 @@ class MyNotesDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-    authentication_classes = [BasicAuthentication, ]
+    authentication_classes = [JWTAuthentication, BasicAuthentication, ]
     permission_classes = [IsAuthenticated, IsNoteOwner, ]
 
     def get_object(self):
