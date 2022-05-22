@@ -83,15 +83,14 @@ class MyNotesListView(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['body', ]
     ordering_fields = ['updated', ]
-    authentication_classes = [JWTAuthentication,BasicAuthentication, ]
-    permission_classes = [IsAuthenticated, IsNoteOwner, ]
+    authentication_classes = [JWTAuthentication,BasicAuthentication,]
+    permission_classes = [IsAuthenticated, ]
 
     def get_queryset(self):
-        print('this is the user', self.request.user)
         return super().get_queryset().filter(Q(user=self.request.user) | Q(collaborations__collaborators=self.request.user))
 
     def perform_create(self, serializer):
-        print('this is user create', self.request.user)
+        print("request.user", self.request.user)
         serializer.save(user=self.request.user)
 
 
@@ -100,7 +99,7 @@ class MyNotesDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     authentication_classes = [JWTAuthentication, BasicAuthentication, ]
-    permission_classes = [IsAuthenticated, IsNoteOwner, ]
+    permission_classes = [IsNoteOwner, IsAuthenticated,]
 
     def get_object(self):
         """
