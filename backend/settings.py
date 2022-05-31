@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
     "corsheaders",
     'rest_framework',
+    'djoser',
     'rest_framework_simplejwt',
     'django_filters',
     'drf_yasg',
@@ -106,13 +107,22 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'meronotes10@gmail.com'
+EMAIL_HOST_PASSWORD = 'mynotes10'
+EMAIL_USE_TLS = True
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
@@ -135,14 +145,33 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Simple JWT OVERRIDE
+#mtdwwvgjxiiqpkdf
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
-    'ROTATE_REFRESH_TOKENS': True,
-    'UPDATE_LAST_LOGIN': True,
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
 
-    'AUTH_HEADER_TYPES': ['Bearer',],
+    'ALGORITHM': 'HS256',
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
 
@@ -197,3 +226,16 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+DJOSER = {
+    'LOGIN_FIELD' : 'email',
+    'SEND_CONFIRMATION_EMAIL' : True,
+    'ACTIVATION_URL' : 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    
+    'SERIALIZERS':{
+        'user_create' : 'user.serializer.UserCreateSerializer',
+        'user' : 'user.serializer.UserCreateSerializer',
+        'user_delete' : 'djoser.serializer.UserDeleteSerializer',
+    }
+}

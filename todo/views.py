@@ -11,7 +11,7 @@ from .models import *
 
 
 ##USING GENERICS APIVIEW
-class MyTodosListView(generics.ListCreateAPIView):
+class MyTodosListCreateView(generics.ListCreateAPIView):
     queryset = Todo.objects.all()
     serializer_class = TodosSerializer
 
@@ -21,12 +21,12 @@ class MyTodoDetailsView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TodosSerializer
 
 
-class MyTaskListView(generics.ListCreateAPIView):
+class MyTaskListCreateView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
     def post(self,request):
-        id = request.data['id']
+        id = request.data.get('id')
         task = request.data['task']
         
         todo = Todo.objects.get(id=id)

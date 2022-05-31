@@ -26,7 +26,6 @@ class RegisterAPI(generics.GenericAPIView):
             "message": "User Created Successfully"
         })
 
-
 class AddColloaborations(generics.ListCreateAPIView):
     queryset = Collaborations.objects.all()
     serializer_class = CollaborationSerializer
