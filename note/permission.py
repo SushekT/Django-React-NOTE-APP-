@@ -1,8 +1,9 @@
 from re import L
 from rest_framework import permissions
 from django.core.exceptions import PermissionDenied
+from django.core import exceptions
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
+from rest_framework.permissions import SAFE_METHODS
 
 from note.models import Note
 from user.models import Collaborations
@@ -24,7 +25,11 @@ class IsNoteOwner(permissions.BasePermission):
         try:
             if collaborations := Collaborations.objects.select_related('collaborators', 'notes__user').get(notes=obj, collaborators=request.user):
                 if 'READ_ONLY' in collaborations.permission:
-                    return False
+                    return bool(
+                        request.method in SAFE_METHODS and
+                        request.user and
+                        request.user.is_authenticated
+                    )
                 return True
         except:
             raise PermissionDenied

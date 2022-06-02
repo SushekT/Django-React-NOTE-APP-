@@ -97,7 +97,12 @@ class MyNotesDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     authentication_classes = [BasicAuthentication, ]
-    permission_classes = [IsAuthenticated, IsNoteOwner, ]
+    permission_classes = [IsNoteOwner]
+
+    def _allowed_methods(self):
+        import ipdb
+        ipdb.set_trace
+        return [m.upper() for m in self.http_method_names if hasattr(self, m)]
 
     def get_object(self):
         """
