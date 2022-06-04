@@ -6,11 +6,17 @@ from django.contrib.auth.hashers import make_password
 from note.serializers import NoteSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
-from user.models import Collaborations
+#djoser
+from djoser.serializers import UserCreateSerializer
 
+from user.models import Collaborations
 
 # TOKEN OBTAIN WITH EMAIL LOGIN
 
+class UserCreateSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = ('id', 'email', 'username', 'password')
 
 # Resgister Serializations
 class RegisterSerializations(serializers.ModelSerializer):
