@@ -18,6 +18,8 @@ from note.filters import NoteFilter
 from note.permission import IsNoteOwner
 from user.models import Collaborations
 
+from django.core.exceptions import PermissionDenied
+
 
 from .models import *
 from .serializers import *
@@ -83,14 +85,13 @@ class MyNotesListView(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['body', ]
     ordering_fields = ['updated', ]
-    authentication_classes = [JWTAuthentication,BasicAuthentication,]
+    authentication_classes = [JWTAuthentication, BasicAuthentication, ]
     permission_classes = [IsAuthenticated, ]
 
     def get_queryset(self):
         return super().get_queryset().filter(Q(user=self.request.user) | Q(collaborations__collaborators=self.request.user))
 
     def perform_create(self, serializer):
-        print("request.user", self.request.user)
         serializer.save(user=self.request.user)
 
 
@@ -99,7 +100,7 @@ class MyNotesDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     authentication_classes = [JWTAuthentication, BasicAuthentication, ]
-    permission_classes = [IsNoteOwner, IsAuthenticated,]
+    permission_classes = [IsNoteOwner]
 
     def get_object(self):
         """
@@ -118,4 +119,23 @@ class MyNotesDetailView(generics.RetrieveUpdateDestroyAPIView):
         You may override this if you need to perform
         custom update. Default returns serializers
         """
+        self.check_object_permissions(self, self.get_object())
+
         serializer.save(updated=datetime.datetime.now())
+
+    def check_object_permissions(self, request, obj):
+        """
+        Check if the request should be permitted for a given object.
+        Raises an appropriate exception if the request is not permitted.
+        """
+
+        if obj.user.id == self.request.user.id:
+            return True
+        try:
+            if collaborations := Collaborations.objects.select_related('collaborators', 'notes__user').get(notes=obj, collaborators=self.request.user):
+                if 'READ_ONLY' in collaborations.permission:
+                    raise PermissionDenied
+                return True
+            raise PermissionDenied
+        except:
+            raise PermissionDenied
