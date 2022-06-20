@@ -22,14 +22,13 @@ class IsNoteOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
     
         if obj.user.id == self.request.user.id:
-            print('Do not Have Permission')
             return True
         try:
             if collaborations := Collaborations.objects.select_related('collaborators', 'notes__user').get(notes=obj, collaborators=request.user):
                 if 'READ_ONLY' in collaborations.permission:
-                    print('Do not Have Permission')
-                    return False
+                    raise PermissionDenied
                 return True
+            raise PermissionDenied
         except:
             raise PermissionDenied
 
