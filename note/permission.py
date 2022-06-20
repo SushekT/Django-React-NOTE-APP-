@@ -1,9 +1,6 @@
-from re import L
+
 from rest_framework import permissions
 from django.core.exceptions import PermissionDenied
-from django.core import exceptions
-from django.contrib.auth.models import User
-from rest_framework.permissions import SAFE_METHODS
 
 from note.models import Note
 from user.models import Collaborations
