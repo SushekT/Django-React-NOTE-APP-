@@ -14,6 +14,15 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.profile_pic.url
+        except Exception:
+            url = ''
+
+        return url
     
 class Collaborations(models.Model):
     notes = models.ForeignKey(

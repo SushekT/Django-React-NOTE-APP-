@@ -3,13 +3,12 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
-from note.serializers import NoteSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
 #djoser
 from djoser.serializers import UserCreateSerializer
 
-from user.models import Collaborations
+from user.models import Collaborations, UserProfile
 
 # TOKEN OBTAIN WITH EMAIL LOGIN
 
@@ -59,3 +58,12 @@ class CollaborationSerializer(serializers.ModelSerializer):
         # by the 'position' field. No two items in a given list may share
         # the same position.
        
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    class Meta:
+         model = UserProfile
+         fields = ['id', 'username', 'isfirst_login','imageURL']    
+
+    def get_username(self, data):
+        return data.user.username
