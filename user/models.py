@@ -9,6 +9,7 @@ from user.constatnts import PERMISSION_TYPE
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    isfirst_login = models.BooleanField(default=True, null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profile')
 
     def __str__(self):
