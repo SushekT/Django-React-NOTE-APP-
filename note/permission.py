@@ -1,8 +1,6 @@
-from re import L
+
 from rest_framework import permissions
 from django.core.exceptions import PermissionDenied
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 
 from note.models import Note
 from user.models import Collaborations
@@ -19,13 +17,15 @@ class IsNoteOwner(permissions.BasePermission):
         return bool(request.user.id)
 
     def has_object_permission(self, request, view, obj):
-        if obj.user.id == request.user.id:
+    
+        if obj.user.id == self.request.user.id:
             return True
         try:
             if collaborations := Collaborations.objects.select_related('collaborators', 'notes__user').get(notes=obj, collaborators=request.user):
                 if 'READ_ONLY' in collaborations.permission:
-                    return False
+                    raise PermissionDenied
                 return True
+            raise PermissionDenied
         except:
             raise PermissionDenied
 
