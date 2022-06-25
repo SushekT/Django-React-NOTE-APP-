@@ -90,7 +90,6 @@ class MyNotesListView(generics.ListCreateAPIView):
         return super().get_queryset().filter(Q(user=self.request.user) | Q(collaborations__collaborators=self.request.user))
 
     def perform_create(self, serializer):
-        print("request.user", self.request.user)
         serializer.save(user=self.request.user)
 
 
