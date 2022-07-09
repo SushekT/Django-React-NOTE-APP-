@@ -1,10 +1,12 @@
+from wsgiref import validate
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
-from rest_framework.validators import UniqueTogetherValidator
+from django.core.exceptions import ObjectDoesNotExist
 
+from note.models import Note
 #djoser
 from djoser.serializers import UserCreateSerializer
 
@@ -15,7 +17,7 @@ from user.models import Collaborations, UserProfile
 class UserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = ('id', 'email', 'username', 'password')
+        fields = ('id', 'email', 'password')
 
 # Resgister Serializations
 class RegisterSerializations(serializers.ModelSerializer):
@@ -42,22 +44,49 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CollaborationSerializer(serializers.ModelSerializer):
-    collaborator = serializers.SerializerMethodField()
-
+    profile = serializers.SerializerMethodField()
     class Meta:
         
         model = Collaborations
-        fields = ['collaborators', 'collaborator', 'permission']
+        fields = ['collaborators','profile', 'permission']
 
-    
-    def get_collaborator(self, obj):
-        return obj.collaborators.email
-
-   
+    def get_profile(self, obj):
+        try:
+            profile = UserProfile.objects.get(user=obj.collaborators)
+            serializer = UserProfileSerializer(profile, many=False)
+            return serializer.data
+        except ObjectDoesNotExist:
+            return None
+            
         # ToDo items belong to a parent list, and have an ordering defined
         # by the 'position' field. No two items in a given list may share
         # the same position.
-       
+    
+class CreateCollaborationSerializer(serializers.ModelSerializer):
+    collaborators = UserSerializer(many=True,read_only=True, allow_null=True, required=False)
+    
+    class Meta:
+        
+        model = Collaborations
+        fields = '__all__'
+
+    def create(self,validated_data):   
+        validated_data['collaborators'] = User.objects.get(
+            email=validated_data.pop('collaborators')
+        )
+
+        validated_data['notes'] = Note.objects.get(  
+              id = validated_data.pop('notes')
+        )
+        print("-====")
+        print(Collaborations.objects.get_or_create(
+            **validated_data,
+        ))
+        return Collaborations.objects.get_or_create(
+            **validated_data,
+        )
+        
+  
 
 class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
