@@ -8,12 +8,21 @@ from user.constatnts import PERMISSION_TYPE
 # Create your models here.
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     isfirst_login = models.BooleanField(default=True, null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profile')
 
     def __str__(self):
         return self.user.username
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.profile_pic.url
+        except Exception:
+            url = ''
+
+        return url
     
 class Collaborations(models.Model):
     notes = models.ForeignKey(
