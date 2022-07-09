@@ -78,16 +78,11 @@ class CreateCollaborationSerializer(serializers.ModelSerializer):
         validated_data['notes'] = Note.objects.get(  
               id = validated_data.pop('notes')
         )
-        print("-====")
-        print(Collaborations.objects.get_or_create(
-            **validated_data,
-        ))
         return Collaborations.objects.get_or_create(
             **validated_data,
         )
         
-  
-
+        
 class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
     class Meta:
