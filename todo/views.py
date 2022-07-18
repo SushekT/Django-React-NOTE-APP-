@@ -3,7 +3,10 @@ from rest_framework.views import APIView
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
+from rest_framework import filters
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import BasicAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serializers import TaskSerializer, TodosSerializer
 from .models import *
@@ -14,12 +17,20 @@ from .models import *
 class MyTodosListCreateView(generics.ListCreateAPIView):
     queryset = Todo.objects.all()
     serializer_class = TodosSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['body', ]
+    ordering_fields = ['updated', ]
+    authentication_classes = [JWTAuthentication,BasicAuthentication,]
+    permission_classes = [IsAuthenticated, ]
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class MyTodoDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Todo.objects.all()
     serializer_class = TodosSerializer
-
+    authentication_classes = [JWTAuthentication, BasicAuthentication, ]
+    permission_classes = [IsAuthenticated,]
 
 class MyTaskListCreateView(generics.ListCreateAPIView):
     queryset = Task.objects.all()

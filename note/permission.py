@@ -42,7 +42,6 @@ class IsCollaborationOwner(permissions.BasePermission):
         #     return True
         # return False
         # print(request.user.id)
-        print('upp')
         return bool(Note.objects.filter(id=view.kwargs['note_id'], user=request.user).count())
 
     def has_object_permission(self, request, view, obj):
