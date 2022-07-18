@@ -1,8 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from django.contrib.auth.models import User
-from rest_framework import generics, permissions, mixins
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import generics, permissions
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from note.permission import IsCollaborationOwner

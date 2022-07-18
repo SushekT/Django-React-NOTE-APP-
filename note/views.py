@@ -85,7 +85,7 @@ class MyNotesListView(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['body', ]
     ordering_fields = ['updated', ]
-    authentication_classes = [JWTAuthentication, BasicAuthentication, ]
+    authentication_classes = [JWTAuthentication,]
     permission_classes = [IsAuthenticated, ]
 
     def get_queryset(self):

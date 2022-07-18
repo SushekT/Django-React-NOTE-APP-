@@ -7,13 +7,15 @@ from user.constatnts import PERMISSION_TYPE
 
 # Create your models here.
 
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to='profile')
 
     def __str__(self):
         return self.user.username
-    
+
+
 class Collaborations(models.Model):
     notes = models.ForeignKey(
         Note, on_delete=models.CASCADE, null=True, related_name='collaborations')
@@ -26,5 +28,3 @@ class Collaborations(models.Model):
 
     class Meta:
         unique_together = ('notes', 'collaborators')
-
-
