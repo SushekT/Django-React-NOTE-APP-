@@ -51,7 +51,7 @@ class AddColloaborations(generics.ListCreateAPIView):
         note_serializer.is_valid(raise_exception=True)
 
         if Collaborations.objects.filter(collaborators_id=collaborators.id,notes_id = notes.id).exists():
-            return Response({"message":"User has already collaborated with this note."})
+            return Response({"message":f"{request.data['collaborators']} user has already collaborated with this note."})
         else:
             validated_data = {**request.data, "collaborators_id":collaborators.id, "notes_id":notes.id}
             c_serializer = self.serializer_class(data=validated_data)
