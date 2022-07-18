@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.fields import ReadOnlyField, SerializerMethodField
-from user.serializer import CollaborationSerializer, UserProfileSerializer
+from user.serializer import CollaborationSerializer, UserProfileSerializer, UserSerializer
 
 from user.models import Collaborations, UserProfile
 
@@ -24,3 +24,29 @@ class NoteSerializer(serializers.ModelSerializer):
         serializer = CollaborationSerializer(collab, many=True)
 
         return serializer.data
+
+class CreateCollaborationSerializer(serializers.ModelSerializer):
+    collaborators = UserSerializer(read_only=True, allow_null=True, required=False)
+    collaborators_id = serializers.IntegerField(write_only=True)
+    notes = NoteSerializer(read_only=True)
+    notes_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        
+        model = Collaborations
+        fields = '__all__'
+
+    # def create(self,validated_data): 
+    #     validated_data['collaborators'] = User.objects.get(
+    #         email=validated_data.pop('collaborators')
+    #     )
+
+    #     validated_data['notes'] = Note.objects.get(  
+    #           id = validated_data.pop('notes')
+    #     )
+    #     
+    #     return Collaborations.objects.get_or_create(
+    #         **validated_data,
+    #     )
+        
+        

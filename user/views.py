@@ -1,3 +1,4 @@
+from genericpath import exists
 from django.shortcuts import render
 from rest_framework.response import Response
 from django.contrib.auth.models import User
@@ -5,10 +6,13 @@ from rest_framework import generics, permissions, mixins
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from note.models import Note
+from note.serializers import NoteSerializer
 from note.permission import IsCollaborationOwner
 
 from user.models import Collaborations
-from user.serializer import CollaborationSerializer, CreateCollaborationSerializer, RegisterSerializations, UserSerializer
+from note.serializers import CreateCollaborationSerializer
+from user.serializer import CollaborationSerializer, RegisterSerializations, UserSerializer
 # Create your views here.
 
 
@@ -33,14 +37,37 @@ class AddColloaborations(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsCollaborationOwner, ]
 
 
-    def post(self, request, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(
-            collaborators = request.data['collaborators'],
-            notes = kwargs.get('note_id')
+    def create(self,request, *args, **kwargs): 
+        collaborators = User.objects.get(
+            email=request.data['collaborators']
         )
-        return Response({'message':'Collaboration Added.'})
+        col_serializer = UserSerializer(data = request.data)
+        col_serializer.is_valid(raise_exception=True)
+
+        notes = Note.objects.get(  
+              id = request.data['notes']
+        )
+        note_serializer = NoteSerializer(data=request.data)
+        note_serializer.is_valid(raise_exception=True)
+
+        if Collaborations.objects.filter(collaborators_id=collaborators.id,notes_id = notes.id).exists():
+            return Response({"message":"User has already collaborated with this note."})
+        else:
+            validated_data = {**request.data, "collaborators_id":collaborators.id, "notes_id":notes.id}
+            c_serializer = self.serializer_class(data=validated_data)
+            c_serializer.is_valid(raise_exception=True)
+            c_serializer.save()
+
+        return Response(c_serializer.data, status=201)
+
+    # def post(self, request, **kwargs):
+    #     serializer = self.serializer_class(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save(
+    #         collaborators = request.data['collaborators'],
+    #         notes = kwargs.get('note_id')
+    #     )
+    #     return Response(serializer.data, status = 201)
 
     def get_queryset(self):
         return super().get_queryset().select_related('notes__user', 'collaborators').filter(notes_id=self.kwargs['note_id'])
