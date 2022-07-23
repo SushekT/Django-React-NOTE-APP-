@@ -14,7 +14,7 @@ class UserProfile(models.Model):
     profile_pic = models.ImageField(upload_to='profile')
 
     def __str__(self):
-        return self.user.username
+        return self.user.email
 
     @property
     def imageURL(self):

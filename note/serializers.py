@@ -24,5 +24,4 @@ class NoteSerializer(serializers.ModelSerializer):
     def get_collaborators(self, data):
         collab = Collaborations.objects.filter(notes_id=data.id)
         serializer = CollaborationSerializer(collab, many=True)
-
         return serializer.data
