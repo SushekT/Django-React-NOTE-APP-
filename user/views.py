@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from django.contrib.auth.models import User
-from rest_framework import generics, permissions, mixins
+from rest_framework import generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
