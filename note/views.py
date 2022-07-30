@@ -24,59 +24,6 @@ from django.core.exceptions import PermissionDenied
 from .models import *
 from .serializers import *
 
-# Create your views here.
-# @api_view(['GET'])
-# def getNote(request):
-#     note = Note.objects.all()
-
-#     serializers = NoteSerializer(note, many=True)
-#     return Response(serializers.data)
-
-# @api_view(['GET'])
-# def getDetailNote(request, pk):
-#     note = Note.objects.get(id=pk)
-#     serializers = NoteSerializer(note, many= False)
-#     return Response(serializers.data)
-
-# @api_view(['POST'])
-# def createNote(request):
-#     note = Note.objects.create()
-#     data = request.data
-#     try:
-#         note.updated = data['updated']
-#         note.body = data['body']
-#         note.save()
-#         print(note.updated)
-#     except:
-#         pass
-#     serializers = NoteSerializer(note, many=False)
-#     return Response(serializers.data)
-
-# @api_view(['PUT'])
-# def updateNote(request, pk):
-#     data = request.data
-
-#     note = Note.objects.get(id = pk)
-#     try:
-#         note.updated = data['updated']
-#         note.body = data['body']
-#         note.save()
-#         print(note.updated)
-#     except:
-#         pass
-
-
-#     serializers = NoteSerializer(note, many= False)
-#     return Response(serializers.data)
-
-# @api_view(['DELETE'])
-# def deleteNote(request, pk):
-#     note = Note.objects.get(id=pk)
-
-#     note.delete()
-
-#     return Response('Deleted.')
-
 
 class MyNotesListView(generics.ListCreateAPIView):
 
@@ -85,11 +32,11 @@ class MyNotesListView(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['body', ]
     ordering_fields = ['updated', ]
-    authentication_classes = [JWTAuthentication, BasicAuthentication, ]
+    authentication_classes = [JWTAuthentication, ]
     permission_classes = [IsAuthenticated, ]
 
     def get_queryset(self):
-        return super().get_queryset().filter(Q(user=self.request.user) | Q(collaborations__collaborators=self.request.user))
+        return super().get_queryset().filter(Q(user=self.request.user) | Q(collaborations__collaborators=self.request.user)).distinct()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
