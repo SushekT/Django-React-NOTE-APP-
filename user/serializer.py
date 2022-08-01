@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from note.models import Note
 # djoser
-from djoser.serializers import UserCreateSerializer
+from djoser.serializers import UserCreateSerializer, TokenCreateSerializer
 
 from user.models import Collaborations, UserProfile
 
@@ -17,6 +17,7 @@ class UserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ('id',  'email', 'username', 'password')
+
 
 # Resgister Serializations
 
@@ -97,3 +98,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_username(self, data):
         return data.user.username
+

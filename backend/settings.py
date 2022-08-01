@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 from decouple import config
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -225,7 +226,7 @@ DJOSER = {
 
     'SERIALIZERS': {
         'user_create': 'user.serializer.UserCreateSerializer',
-        'user': 'user.serializer.UserCreateSerializer',
+        'user': 'user.serializer.UserSerializer',
         'user_delete': 'djoser.serializer.UserDeleteSerializer',
     }
 }

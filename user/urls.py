@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 urlpatterns = [
     path('register/', views.RegisterAPI.as_view(), name='register'),
 
-    path('gettoken/', TokenObtainPairView.as_view(), name='token_obtain_view'),
+    path('create/', views.MyTokenObtainPairView.as_view(), name='token_obtain_view'),
     path('refreshtoken/', TokenRefreshView.as_view(), name='token_refresh'),
     path('verifytoken/', TokenVerifyView.as_view(), name='token_verify'),
     path('addacollaboration/<int:note_id>/',
