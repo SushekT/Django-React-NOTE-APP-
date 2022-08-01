@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'todo',
     'user',
     'profile',
+    'activitylog',
 
     "corsheaders",
     'rest_framework',

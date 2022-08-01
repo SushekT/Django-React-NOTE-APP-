@@ -13,6 +13,7 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
+from activitylog.mixins import ActivityLogMixins
 
 from note.filters import NoteFilter
 from note.permission import IsNoteOwner
@@ -25,7 +26,7 @@ from .models import *
 from .serializers import *
 
 
-class MyNotesListView(generics.ListCreateAPIView):
+class MyNotesListView(ActivityLogMixins, generics.ListCreateAPIView):
 
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
@@ -42,7 +43,7 @@ class MyNotesListView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class MyNotesDetailView(generics.RetrieveUpdateDestroyAPIView):
+class MyNotesDetailView(ActivityLogMixins, generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
@@ -69,6 +70,11 @@ class MyNotesDetailView(generics.RetrieveUpdateDestroyAPIView):
         self.check_object_permissions(self, self.get_object())
 
         serializer.save(updated=datetime.datetime.now())
+
+    def perform_destroy(self, instance):
+
+        self.check_object_permissions(self, self.get_object())
+        return super().perform_destroy(instance)
 
     def check_object_permissions(self, request, obj):
         """
