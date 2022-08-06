@@ -9,9 +9,14 @@ from note.permission import IsCollaborationOwner
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import viewsets
+from djoser.views import UserViewSet
+from djoser import signals
+from djoser.compat import get_user_email
+from djoser.conf import settings
 
-from user.models import Collaborations
-from user.serializer import CollaborationSerializer, CreateCollaborationSerializer, RegisterSerializations, UserSerializer
+from user.models import Collaborations, UserProfile
+from user.serializer import CollaborationSerializer, CreateCollaborationSerializer, UserProfileSerializer, UserSerializer
 from activitylog.signal import log_user_login
 
 
@@ -37,19 +42,22 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-class RegisterAPI(generics.GenericAPIView):
-    serializer_class = RegisterSerializations
-    permission_classes = [permissions.AllowAny]
+class RegisterAPI(UserViewSet):
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def perform_create(self, serializer):
         user = serializer.save()
-
-        return Response({
-            'user': UserSerializer(user, context=self.get_serializer_context()).data,
-            "message": "User Created Successfully"
-        })
+        UserProfile.objects.create(
+            user=user
+        )
+        signals.user_registered.send(
+            sender=self.__class__, user=user, request=self.request
+        )
+        context = {"user": user}
+        to = [get_user_email(user)]
+        if settings.SEND_ACTIVATION_EMAIL:
+            settings.EMAIL.activation(self.request, context).send(to)
+        elif settings.SEND_CONFIRMATION_EMAIL:
+            settings.EMAIL.confirmation(self.request, context).send(to)
 
 
 class AddColloaborations(generics.ListCreateAPIView):
@@ -85,3 +93,31 @@ class UpdateDeleteCollobaorations(generics.RetrieveUpdateDestroyAPIView):
         custom update. Default returns serializers
         """
         serializer.save(notes_id=self.kwargs.get('pk'))
+
+
+class ProfileViewUpdate(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    authentication_classes = [JWTAuthentication, ]
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return UserProfile.objects.filter(user__id=self.kwargs.get('id')).first()
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        user_serilaizer = UserSerializer(
+            instance.user, data=request.data, partial=partial)
+        user_serilaizer.is_valid(raise_exception=True)
+        self.perform_update(user_serilaizer)
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)

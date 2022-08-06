@@ -17,13 +17,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-#SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
-#SECURE_SSL_REDIRECT = False
-
 ALLOWED_HOSTS = ['http://notes.pandamotions.com/',
                  'localhost', '127.0.0.1', 'notes.pandamotions.com', '.ngrok.io']
-
 
 # Application definition
 
