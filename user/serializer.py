@@ -74,12 +74,8 @@ class CreateCollaborationSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    username = serializers.SerializerMethodField()
     user = UserSerializer()
 
     class Meta:
         model = UserProfile
         fields = ['id', 'user', 'isfirst_login', 'profile_pic']
-
-    def get_username(self, data):
-        return data.user.username
