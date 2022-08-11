@@ -102,7 +102,7 @@ class ProfileViewUpdate(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return UserProfile.objects.filter(user__id=self.kwargs.get('id')).first()
+        return UserProfile.objects.filter(user__id=self.request.user.id).first()
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)

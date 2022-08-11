@@ -17,7 +17,7 @@ urlpatterns = [
     path('editcollaborations/<int:pk>/',
          views.UpdateDeleteCollobaorations.as_view(), name='update_collaboration'),
 
-    path('profile-update/<int:id>/',
+    path('profile-update/',
          views.ProfileViewUpdate.as_view(), name='profile_update'),
 
     path('', include(router.urls)),
