@@ -21,4 +21,6 @@ urlpatterns = [
          views.ProfileViewUpdate.as_view(), name='profile_update'),
 
     path('', include(router.urls)),
+
+    path('users/', views.UserView.as_view(), name='collaboration_username')
 ]

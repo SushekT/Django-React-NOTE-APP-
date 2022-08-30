@@ -187,8 +187,7 @@ a {
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
 }
 
-
-.logout-button > svg {
+.floating-button > svg {
   fill: var(--color-bg);
 }
 
@@ -196,7 +195,7 @@ a {
   font-size: 48px;
   position: fixed;
   bottom: 24px;
-  right: 16px;
+  right: 180px;
   background: var(--color-main);
   border: none;
   width: 60px;
@@ -209,16 +208,39 @@ a {
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
 }
 
-
-.floating-button > svg {
+.logout-button > svg {
   fill: var(--color-bg);
 }
+
+.collaborate-button{
+  font-size: 48px;
+  position: fixed;
+  bottom: 24px;
+  right: 180px;
+  background: var(--color-main);
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+}
+
+.collaborate-button > svg {
+  fill: var(--color-bg);
+}
+
+
+
 
 .themechanger {
     font-size: 48px;
     position: fixed;
     bottom: 24px;
-    right:96px;
+    right:98px;
     background: var(--color-main);
     border: none;
     width: 60px;
@@ -232,14 +254,12 @@ a {
   }
 
 
-
-
   @media only screen and (max-width: 900px) {
     .themechanger {
         font-size: 48px;
-        position: fixed;
-        bottom: 24px;
-        right:96px;
+        position: absolute;
+        bottom: -18px;
+        right:78px;
         background: var(--color-main);
         border: none;
         width: 60px;

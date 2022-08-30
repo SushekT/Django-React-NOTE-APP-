@@ -5,7 +5,7 @@ from rest_framework import generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
-from note.permission import IsCollaborationOwner
+from note.permission import IsCollaborationOwner, IsNoteOwner
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -18,6 +18,7 @@ from djoser.conf import settings
 from user.models import Collaborations, UserProfile
 from user.serializer import CollaborationSerializer, CreateCollaborationSerializer, UserProfileSerializer, UserSerializer
 from activitylog.signal import log_user_login
+from rest_framework import filters
 
 
 class MyTokenObtainPairSerializer(TokenObtainSerializer):
@@ -121,3 +122,12 @@ class ProfileViewUpdate(generics.RetrieveUpdateDestroyAPIView):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
+
+
+class UserView(generics.ListAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['user__email', 'user__username']

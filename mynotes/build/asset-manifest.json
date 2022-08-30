@@ -1,24 +1,17 @@
 {
-  "files": {
-    "main.css": "/static/css/main.67b65980.chunk.css",
-    "main.js": "/static/js/main.8715091c.chunk.js",
-    "main.js.map": "/static/js/main.8715091c.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.a4a0357a.js",
-    "runtime-main.js.map": "/static/js/runtime-main.a4a0357a.js.map",
-    "static/js/2.e339d955.chunk.js": "/static/js/2.e339d955.chunk.js",
-    "static/js/2.e339d955.chunk.js.map": "/static/js/2.e339d955.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/main.67b65980.chunk.css.map": "/static/css/main.67b65980.chunk.css.map",
-    "static/js/2.e339d955.chunk.js.LICENSE.txt": "/static/js/2.e339d955.chunk.js.LICENSE.txt",
-    "static/media/add.ebf59862.svg": "/static/media/add.ebf59862.svg",
-    "static/media/chevron-left.b553318e.svg": "/static/media/chevron-left.b553318e.svg",
-    "static/media/moon.253ef7fc.svg": "/static/media/moon.253ef7fc.svg",
-    "static/media/sun.87853ce8.svg": "/static/media/sun.87853ce8.svg"
-  },
-  "entrypoints": [
-    "static/js/runtime-main.a4a0357a.js",
-    "static/js/2.e339d955.chunk.js",
-    "static/css/main.67b65980.chunk.css",
-    "static/js/main.8715091c.chunk.js"
-  ]
+  "main.css": "/static/css/main.c255cf91.chunk.css",
+  "main.js": "/static/js/main.b04b3082.chunk.js",
+  "main.js.map": "/static/js/main.b04b3082.chunk.js.map",
+  "static/js/1.27e95358.chunk.js": "/static/js/1.27e95358.chunk.js",
+  "static/js/1.27e95358.chunk.js.map": "/static/js/1.27e95358.chunk.js.map",
+  "runtime~main.js": "/static/js/runtime~main.229c360f.js",
+  "runtime~main.js.map": "/static/js/runtime~main.229c360f.js.map",
+  "static/media/add.f6a9792d.svg": "/static/media/add.f6a9792d.svg",
+  "static/media/chevron-left.b3c2e7e4.svg": "/static/media/chevron-left.b3c2e7e4.svg",
+  "static/media/sun.ba156c18.svg": "/static/media/sun.ba156c18.svg",
+  "static/media/moon.ca9b7494.svg": "/static/media/moon.ca9b7494.svg",
+  "static/css/main.c255cf91.chunk.css.map": "/static/css/main.c255cf91.chunk.css.map",
+  "index.html": "/index.html",
+  "precache-manifest.eb95514afd4e0235ccf36c78fd886ab2.js": "/precache-manifest.eb95514afd4e0235ccf36c78fd886ab2.js",
+  "service-worker.js": "/service-worker.js"
 }
