@@ -3,6 +3,8 @@ import os
 from datetime import timedelta
 from decouple import config
 from django.utils.translation import gettext_lazy as _
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,7 +20,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['http://notes.pandamotions.com/',
-                 'localhost', '127.0.0.1', 'notes.pandamotions.com',]
+                 'localhost', '127.0.0.1', 'notes.pandamotions.com', ]
 
 # Application definition
 
