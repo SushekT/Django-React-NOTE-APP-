@@ -48,7 +48,8 @@ class RegisterAPI(UserViewSet):
     def perform_create(self, serializer):
         user = serializer.save()
         UserProfile.objects.create(
-            user=user
+            user=user,
+            user__is_active=True
         )
         signals.user_registered.send(
             sender=self.__class__, user=user, request=self.request
