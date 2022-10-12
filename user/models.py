@@ -31,7 +31,8 @@ class Collaborations(models.Model):
         Note, on_delete=models.CASCADE, null=True, related_name='collaborations')
     collaborators = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True)
-    permission = models.CharField(choices=PERMISSION_TYPE, max_length=10)
+    permission = models.CharField(
+        choices=PERMISSION_TYPE, max_length=10, default=PERMISSION_TYPE[0][1])
 
     def __str__(self):
         return f'{self.notes.user} had collaborated with {self.collaborators}'

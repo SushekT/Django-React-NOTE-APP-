@@ -5,6 +5,8 @@ from rest_framework import generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
+from note.models import Note
 from note.permission import IsCollaborationOwner, IsNoteOwner
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -65,15 +67,23 @@ class RegisterAPI(UserViewSet):
 class AddColloaborations(generics.ListCreateAPIView):
     queryset = Collaborations.objects.all()
     serializer_class = CreateCollaborationSerializer
-    authentication_classes = [JWTAuthentication, BasicAuthentication, ]
+    authentication_classes = [JWTAuthentication, ]
     permission_classes = [IsAuthenticated, IsCollaborationOwner, ]
 
     def post(self, request, **kwargs):
-        serializer = self.serializer_class(data=request.data)
+        user = User.objects.get(email=request.data.get('collaborators'))
+        note = Note.objects.get(id=kwargs.get('note_id'))
+        data = {
+            'collaborators': user.id,
+            'notes': note.id
+        }
+
+        serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
+
         serializer.save(
-            collaborators=request.data['collaborators'],
-            notes=kwargs.get('note_id')
+            collaborators=user,
+            notes=note
         )
         return Response({'message': 'Collaboration Added.'})
 

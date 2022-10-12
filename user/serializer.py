@@ -52,25 +52,11 @@ class CollaborationSerializer(serializers.ModelSerializer):
 
 
 class CreateCollaborationSerializer(serializers.ModelSerializer):
-    collaborators = UserSerializer(
-        many=True, read_only=True, allow_null=True, required=False)
 
     class Meta:
 
         model = Collaborations
         fields = '__all__'
-
-    def create(self, validated_data):
-        validated_data['collaborators'] = User.objects.get(
-            email=validated_data.pop('collaborators')
-        )
-
-        validated_data['notes'] = Note.objects.get(
-            id=validated_data.pop('notes')
-        )
-        return Collaborations.objects.get_or_create(
-            **validated_data,
-        )
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
