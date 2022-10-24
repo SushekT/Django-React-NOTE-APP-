@@ -37,13 +37,21 @@ class IsCollaborationOwner(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-
-        # if view.get_queryset().filter(notes_id=request.user.id).exists():
-        #     return True
-        # return False
-        # print(request.user.id)
         return bool(Note.objects.filter(id=view.kwargs['note_id'], user=request.user).count())
 
     def has_object_permission(self, request, view, obj):
 
-        return bool(obj.notes.user == request.user)
+        return obj.notes.user == request.user
+
+
+class IsCollaborationOwnerPatch(permissions.BasePermission):
+    """
+    Object level permission to only allow allow of an object to edit it
+    Assumes the model instance has an 'owner' attribute
+    """
+
+    def has_permission(self, request, view):
+        return Collaborations.objects.get(id=view.kwargs["note_id"]).notes.user == request.user
+
+    def has_object_permission(self, request, view, obj):
+        return obj.notes.user == request.user

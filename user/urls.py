@@ -14,7 +14,7 @@ urlpatterns = [
     path('verifytoken/', TokenVerifyView.as_view(), name='token_verify'),
     path('addacollaboration/<int:note_id>/',
          views.AddColloaborations.as_view(), name='create_collaboration'),
-    path('editcollaborations/<int:pk>/',
+    path('editcollaborations/<str:note_id>/',
          views.UpdateDeleteCollobaorations.as_view(), name='update_collaboration'),
 
     path('profile-update/',

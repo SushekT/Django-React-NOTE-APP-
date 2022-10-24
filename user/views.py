@@ -1,13 +1,12 @@
-from django.shortcuts import render
+from urllib import response
 from rest_framework.response import Response
-from django.contrib.auth.models import update_last_login
 from rest_framework import generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from note.models import Note
-from note.permission import IsCollaborationOwner, IsNoteOwner
+from note.permission import IsCollaborationOwner, IsCollaborationOwnerPatch, IsNoteOwner
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenObtainSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -21,6 +20,8 @@ from user.models import Collaborations, UserProfile
 from user.serializer import CollaborationSerializer, CreateCollaborationSerializer, UserProfileSerializer, UserSerializer
 from activitylog.signal import log_user_login
 from rest_framework import filters
+
+from user.constatnts import PERMISSION_TYPE
 
 
 class MyTokenObtainPairSerializer(TokenObtainSerializer):
@@ -94,8 +95,11 @@ class AddColloaborations(generics.ListCreateAPIView):
 class UpdateDeleteCollobaorations(generics.RetrieveUpdateDestroyAPIView):
     queryset = Collaborations.objects.all()
     serializer_class = CollaborationSerializer
-    authentication_classes = [BasicAuthentication, ]
-    permission_classes = [IsAuthenticated, IsCollaborationOwner]
+    authentication_classes = [JWTAuthentication, ]
+    permission_classes = [IsAuthenticated, IsCollaborationOwnerPatch]
+
+    def get_object(self):
+        return Collaborations.objects.get(id=self.kwargs.get('note_id'))
 
     def perform_update(self, serializer):
         """
@@ -104,7 +108,18 @@ class UpdateDeleteCollobaorations(generics.RetrieveUpdateDestroyAPIView):
         You may override this if you need to perform
         custom update. Default returns serializers
         """
-        serializer.save(notes_id=self.kwargs.get('pk'))
+        serializer.save(notes_id=self.kwargs.get('note_id'))
+
+    def patch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        data = request.data.get('permission')
+        if data == 'READ_ONLY':
+            obj.permission = PERMISSION_TYPE[0][1]
+        elif data == 'EDITOR':
+            obj.permission = PERMISSION_TYPE[1][1]
+        obj.save()
+
+        return Response({'message': 'Successfully Changed.'})
 
 
 class ProfileViewUpdate(generics.RetrieveUpdateDestroyAPIView):

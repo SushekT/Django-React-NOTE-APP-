@@ -3,6 +3,7 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { userForgetPasswordReducer, userGetReducer, userLoginReducer, userProfileUpdateReducer, userRegisterReducer, userResetPasswordReducer } from './reducers/login/login.reducers'
 import { noteCreateReducer, noteDetailDeleteReducer, noteDetailReducer, noteReducer, noteUpdateReducer } from './reducers/notes/notes.reducers'
+import { collaboratorReducer, permissionReducer } from './reducers/collaboration/collaboration.reducers'
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -15,6 +16,8 @@ const reducer = combineReducers({
     userResetPassword: userResetPasswordReducer,
     userProfileUpdate: userProfileUpdateReducer,
     getAllUser: userGetReducer,
+    addcollaborator : collaboratorReducer,
+    permission : permissionReducer,
     
 })
 

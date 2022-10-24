@@ -34,6 +34,9 @@ const NotePage = () => {
     const noteDeleteState = useSelector(state => state.noteDetailsDelete)
     const { success:noteDeleteSuccess, error:NoteDetailDeleteError } = noteDeleteState
 
+
+    
+
     const dispatch = useDispatch()
     
     useEffect(()=>{

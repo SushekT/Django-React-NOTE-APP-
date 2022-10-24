@@ -36,7 +36,7 @@ class CollaborationSerializer(serializers.ModelSerializer):
 
         model = Collaborations
         fields = ['profile',
-                  'permission', 'collaborators']
+                  'permission', 'collaborators', 'id']
 
     def get_profile(self, obj):
         try:

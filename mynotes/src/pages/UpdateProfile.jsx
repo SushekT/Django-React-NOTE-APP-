@@ -75,7 +75,6 @@ export default function UpdateProfile() {
         if (reason === 'clickaway') {
             return;
         }
-        console.log('close')
     
         setOpen(false);
         };
